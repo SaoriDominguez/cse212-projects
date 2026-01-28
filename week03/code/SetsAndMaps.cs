@@ -20,10 +20,31 @@ public static class SetsAndMaps
     /// </summary>
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
+{
+    var seen = new HashSet<string>();
+    var pairs = new List<string>();
+
+    foreach (var word in words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        // Special case: "aa" doesn't match anything
+        if (word.Length == 2 && word[0] == word[1])
+            continue;
+
+        var reversed = $"{word[1]}{word[0]}";
+
+        if (seen.Contains(reversed))
+        {
+            pairs.Add($"{reversed} & {word}");
+        }
+        else
+        {
+            seen.Add(word);
+        }
     }
+
+    return pairs.ToArray();
+}
+
 
     /// <summary>
     /// Read a census file and summarize the degrees (education)
@@ -37,16 +58,35 @@ public static class SetsAndMaps
     /// <param name="filename">The name of the file to read</param>
     /// <returns>fixed array of divisors</returns>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
-    {
-        var degrees = new Dictionary<string, int>();
-        foreach (var line in File.ReadLines(filename))
-        {
-            var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
-        }
+{
+    var degrees = new Dictionary<string, int>();
 
-        return degrees;
+    foreach (var line in File.ReadLines(filename))
+    {
+        if (string.IsNullOrWhiteSpace(line))
+            continue;
+
+        // Try tab first, then comma
+        var fields = line.Split('\t');
+        if (fields.Length < 4)
+            fields = line.Split(',');
+
+        if (fields.Length < 4)
+            continue;
+
+        var degree = fields[3].Trim();
+
+        if (string.IsNullOrEmpty(degree))
+            continue;
+
+        if (degrees.ContainsKey(degree))
+            degrees[degree]++;
+        else
+            degrees[degree] = 1;
     }
+
+    return degrees;
+}
 
     /// <summary>
     /// Determine if 'word1' and 'word2' are anagrams.  An anagram
@@ -65,10 +105,40 @@ public static class SetsAndMaps
     /// using the [] notation.
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
-    {
-        // TODO Problem 3 - ADD YOUR CODE HERE
+{
+    if (word1 is null || word2 is null)
         return false;
+
+    // Ignore spaces + ignore case
+    word1 = new string(word1.Where(c => c != ' ').Select(char.ToLowerInvariant).ToArray());
+    word2 = new string(word2.Where(c => c != ' ').Select(char.ToLowerInvariant).ToArray());
+
+    if (word1.Length != word2.Length)
+        return false;
+
+    var counts = new Dictionary<char, int>();
+
+    foreach (var c in word1)
+    {
+        if (counts.ContainsKey(c))
+            counts[c]++;
+        else
+            counts[c] = 1;
     }
+
+    foreach (var c in word2)
+    {
+        if (!counts.ContainsKey(c))
+            return false;
+
+        counts[c]--;
+
+        if (counts[c] == 0)
+            counts.Remove(c);
+    }
+
+    return counts.Count == 0;
+}
 
     /// <summary>
     /// This function will read JSON (Javascript Object Notation) data from the 
