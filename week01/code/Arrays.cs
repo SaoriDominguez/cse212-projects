@@ -8,12 +8,21 @@ public static class Arrays
     /// <returns>array of doubles that are the multiples of the supplied number</returns>
     public static double[] MultiplesOf(double number, int length)
     {
-        // TODO Problem 1 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // PLAN:
+        // 1) Create an array of doubles with size = length.
+        // 2) For each position i from 0 to length - 1:
+        //    - The value should be number * (i + 1)
+        //      (because i=0 should give the first multiple: number * 1).
+        // 3) Return the filled array.
 
-        return []; // replace this return statement with your own
+        var result = new double[length];
+
+        for (int i = 0; i < length; i++)
+        {
+            result[i] = number * (i + 1);
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -25,9 +34,18 @@ public static class Arrays
     /// </summary>
     public static void RotateListRight(List<int> data, int amount)
     {
-        // TODO Problem 2 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // PLAN:
+        // 1) Compute where the "split" happens:
+        //    - The last 'amount' items move to the front.
+        //    - So splitIndex = data.Count - amount.
+        // 2) Copy the last 'amount' items into a temporary list (tail).
+        // 3) Remove those last 'amount' items from the original list.
+        // 4) Insert the saved tail items at the front of the original list.
+
+        int splitIndex = data.Count - amount;
+
+        List<int> tail = data.GetRange(splitIndex, amount);
+        data.RemoveRange(splitIndex, amount);
+        data.InsertRange(0, tail);
     }
 }
